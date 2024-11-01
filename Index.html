@@ -3,24 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لعبة شبيهة بماريو - مطورة</title>
+    <title>لعبة شبيهة بماريو</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="startScreen">
-        <button id="startButton">بدء اللعبة</button>
-    </div>
-    <div class="game">
-        <div class="player" id="player"></div>
-        <div class="obstacle" id="obstacle"></div>
-        <div class="platform" style="left: 150px; bottom: 150px;"></div>
-        <div class="platform" style="left: 400px; bottom: 100px;"></div>
-        <div class="coin" style="left: 200px; bottom: 180px;"></div>
-        <div class="coin" style="left: 450px; bottom: 130px;"></div>
-    </div>
-    <div id="scoreBoard">
-        <div id="score">النتيجة: 0</div>
-        <div id="highScore">أفضل نتيجة: 0</div>
+    <div class="game-container">
+        <div class="character" id="character"></div>
+        <div class="ground"></div>
     </div>
     <script src="script.js"></script>
 </body>
