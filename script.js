@@ -1,40 +1,68 @@
-const startScreen = document.getElementById("startScreen");
-const startButton = document.getElementById("startButton");
-const gameContainer = document.querySelector(".game");
-const player = document.getElementById("player");
-const obstacle = document.getElementById("obstacle");
-const platforms = document.querySelectorAll(".platform");
-const coins = document.querySelectorAll(".coin");
-const scoreDisplay = document.getElementById("score");
-const highScoreDisplay = document.getElementById("highScore");
-
-let playerX = 50;
-let playerY = 50;
+const character = document.getElementById("character");
 let isJumping = false;
-let score = 0;
-let highScore = localStorage.getItem("highScore") || 0;
-highScoreDisplay.innerText = `أفضل نتيجة: ${highScore}`;
+let isMovingLeft = false;
+let isMovingRight = false;
+let characterPositionX = 50;
+let velocityY = 0;
+const gravity = 0.5;
 
-startButton.addEventListener("click", startGame);
-
-function startGame() {
-    startScreen.style.display = "none";
-    gameContainer.style.display = "block";
-    // باقي الكود الخاص بتحريك اللاعب والمصادمات، وإضافة نقاط.
+function jump() {
+    if (!isJumping) {
+        velocityY = -10;
+        isJumping = true;
+    }
 }
 
-document.addEventListener("keydown", function(event) {
-    switch (event.key) {
-        case "ArrowUp":
-            if (!isJumping) jump();
-            break;
-        case "ArrowRight":
-            moveRight();
-            break;
-        case "ArrowLeft":
-            moveLeft();
-            break;
+function moveLeft() {
+    isMovingLeft = true;
+}
+
+function moveRight() {
+    isMovingRight = true;
+}
+
+function stopMoving() {
+    isMovingLeft = false;
+    isMovingRight = false;
+}
+
+function update() {
+    // الحركة الأفقية
+    if (isMovingLeft) {
+        characterPositionX -= 5;
+    } else if (isMovingRight) {
+        characterPositionX += 5;
     }
+    
+    // الجاذبية
+    characterPositionY += velocityY;
+    velocityY += gravity;
+
+    // التأكد من عدم سقوط الشخصية خارج الأرضية
+    if (characterPositionY > 300) { // قيمة الأرضية
+        characterPositionY = 300;
+        velocityY = 0;
+        isJumping = false;
+    }
+
+    // تحديث موقع الشخصية
+    character.style.left = `${characterPositionX}px`;
+    character.style.bottom = `${characterPositionY}px`;
+
+    requestAnimationFrame(update);
+}
+
+// التحكم بالشخصية عبر لوحة المفاتيح
+document.addEventListener("keydown", function(event) {
+    if (event.key === "ArrowUp") jump();
+    if (event.key === "ArrowLeft") moveLeft();
+    if (event.key === "ArrowRight") moveRight();
 });
 
-// باقي الكود الخاص بوظائف اللعبة مثل الحركة والقفز وجمع العملات والتحقق من المصادمات وغيرها...
+document.addEventListener("keyup", function(event) {
+    if (event.key === "ArrowLeft" || event.key === "ArrowRight") stopMoving();
+});
+
+// بدء الحركة
+let characterPositionY = 50;
+update();
