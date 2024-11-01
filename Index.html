@@ -4,13 +4,123 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لعبة شبيهة بماريو</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #87CEEB;
+        }
+
+        .game-container {
+            position: relative;
+            width: 800px;
+            height: 400px;
+            background-color: #9B7653;
+            overflow: hidden;
+        }
+
+        .character {
+            position: absolute;
+            bottom: 50px;
+            left: 50px;
+            width: 50px;
+            height: 50px;
+            background-color: red;
+            border-radius: 10%;
+        }
+
+        .ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 50px;
+            background-color: #654321;
+        }
+    </style>
 </head>
 <body>
     <div class="game-container">
         <div class="character" id="character"></div>
         <div class="ground"></div>
     </div>
-    <script src="script.js"></script>
+    <script>
+        const character = document.getElementById("character");
+        let isJumping = false;
+        let isMovingLeft = false;
+        let isMovingRight = false;
+        let characterPositionX = 50;
+        let characterPositionY = 50;
+        let velocityY = 0;
+        const gravity = 0.5;
+
+        function jump() {
+            if (!isJumping) {
+                velocityY = -10;
+                isJumping = true;
+            }
+        }
+
+        function moveLeft() {
+            isMovingLeft = true;
+        }
+
+        function moveRight() {
+            isMovingRight = true;
+        }
+
+        function stopMoving() {
+            isMovingLeft = false;
+            isMovingRight = false;
+        }
+
+        function update() {
+            // الحركة الأفقية
+            if (isMovingLeft) {
+                characterPositionX -= 5;
+            } 
+            if (isMovingRight) {
+                characterPositionX += 5;
+            }
+            
+            // الجاذبية
+            characterPositionY += velocityY;
+            velocityY += gravity;
+
+            // التأكد من عدم سقوط الشخصية خارج الأرضية
+            if (characterPositionY <= 50) { // قيمة الأرضية
+                characterPositionY = 50;
+                velocityY = 0;
+                isJumping = false;
+            }
+
+            // تحديث موقع الشخصية
+            character.style.left = `${characterPositionX}px`;
+            character.style.bottom = `${characterPositionY}px`;
+
+            requestAnimationFrame(update);
+        }
+
+        // التحكم بالشخصية عبر لوحة المفاتيح
+        document.addEventListener("keydown", function(event) {
+            if (event.key === "ArrowUp") jump();
+            if (event.key === "ArrowLeft") moveLeft();
+            if (event.key === "ArrowRight") moveRight();
+        });
+
+        document.addEventListener("keyup", function(event) {
+            if (event.key === "ArrowLeft" || event.key === "ArrowRight") stopMoving();
+        });
+
+        // بدء الحركة
+        update();
+    </script>
 </body>
 </html>
